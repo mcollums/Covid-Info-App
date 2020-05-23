@@ -8,12 +8,12 @@ import { Input, TextArea, FormBtn } from "../components/Form";
 
 function Graph() {
     // Setting our component's initial state
-    const [covidData, setCovidData] = useState("global")
+    const [covidData, setCovidData] = useState({})
     const [formObject, setFormObject] = useState({})
 
     // Load global data and store them with setCovidData
     useEffect(() => {
-        loadCovidData()
+        loadCovidData("global")
     }, [])
 
     // Loads covid data based on location and sets them to covidData
@@ -39,13 +39,13 @@ function Graph() {
     // When the form is submitted, use the API.getCovidData based on the location
     function handleFormSubmit(event) {
         event.preventDefault();
-        console.log("handleFormSubmit")
+        loadCovidData(formObject.location);
     };
 
     return (
         <Container fluid>
             <Row>
-                <Col size="1"/>
+                <Col size="1" />
                 <Col size="3">
                     <h6>Covid International Statistics</h6>
                 </Col>
@@ -68,35 +68,14 @@ function Graph() {
                 </Col>
             </Row>
             <Row>
-                <Col size="1"/>
-                <Col size="8">
+                <Col size="1" />
+                <Col size="md-8 sm-12">
                     <h4>{covidData.location} Covid-19 Statistics</h4>
                     <p>{covidData.recovered} Total Recovered</p>
                     <p>{covidData.deaths} Total Deaths</p>
                     <p>{covidData.confirmed} Confirmed Cases</p>
                     <p>{covidData.lastReported} Date Reported</p>
                 </Col>
-                {/* <Col size="md-6 sm-12">
-                    <Jumbotron>
-                        <h1>Books On My List</h1>
-                    </Jumbotron>
-                    {books.length ? (
-                        <List>
-                            {books.map(book => (
-                                <ListItem key={book._id}>
-                                    <Link to={"/books/" + book._id}>
-                                        <strong>
-                                            {book.title} by {book.author}
-                                        </strong>
-                                    </Link>
-                                    <DeleteBtn onClick={() => deleteBook(book._id)} />
-                                </ListItem>
-                            ))}
-                        </List>
-                    ) : (
-                            <h3>No Results to Display</h3>
-                        )}
-                </Col> */}
             </Row>
         </Container>
     );
