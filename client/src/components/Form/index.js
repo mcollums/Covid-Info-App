@@ -4,8 +4,23 @@ import React from "react";
 
 export function Input(props) {
   return (
-    <div className="form-group" style={{float: props.floatdir, width: "70%", marginRight: "10px" }}>
+    <div className="form-group" style={{ float: props.floatdir, width: "70%", marginRight: "10px" }}>
       <input className="form-control" {...props} />
+    </div>
+  );
+}
+
+export function DropDown(props) {
+  return (
+    <div className="form-group" style={{ float: props.floatdir, width: "70%", marginRight: "10px" }}>
+      <select className="form-control" id="select-form" {...props} >
+        <option>-- Please Choose an Country --</option>
+        <option>Canada</option>
+        <option>Italy</option>
+        <option>Spain</option>
+        <option>Mexico</option>
+        <option>USA</option>
+      </select>
     </div>
   );
 }

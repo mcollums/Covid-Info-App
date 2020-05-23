@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
-import { Input, FormBtn } from "../components/Form";
+import { CountrySearchBar } from "../components/CountrySearchBar";
+
 
 function Graph() {
     // Setting the component's initial state
@@ -30,14 +31,16 @@ function Graph() {
 
     // Handles updating component state when the user types into the input field
     function handleInputChange(event) {
+        console.log(event.target.value)
         const { name, value } = event.target;
         setFormObject({ ...formObject, [name]: value }) //takes past state and overwrites the property being passed from input field
+        // loadCovidData(formObject.country)
     };
 
     // When the form is submitted, use the API.getCovidData based on the FormObject's location
     function handleFormSubmit(event) {
         event.preventDefault();
-        loadCovidData(formObject.location);
+        loadCovidData(formObject.country);
     };
 
     return (
@@ -48,21 +51,11 @@ function Graph() {
                     <h6>Covid International Statistics</h6>
                 </Col>
                 <Col size="7">
-                    <form>
-                        <Input
-                            onChange={handleInputChange}
-                            name="location"
-                            placeholder="Country (optional)"
-                            floatdir={"left"}
-                        />
-                        <FormBtn
-                            disabled={!(formObject.location)}
-                            onClick={handleFormSubmit}
-                            floatdir={"left"}
-                        >
-                            Search Country
-                    </FormBtn>
-                    </form>
+                    <CountrySearchBar
+                        onClick = {handleFormSubmit}
+                        onChange={handleInputChange}
+                        country={formObject.country}
+                    />
                 </Col>
             </Row>
             <Row>
