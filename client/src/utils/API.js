@@ -1,6 +1,9 @@
 import axios from "axios";
 
 export default {
+  getCovidData: function(location) {
+    return axios.get("api/stats/" + location)
+  },
   // Gets all books
   getBooks: function() {
     return axios.get("/api/books");

@@ -2,7 +2,7 @@ const db = require("../models");
 const axios = require('axios');
 
 module.exports = {
-    getGlobalStats: async function (req, res) {
+    getStatsByLocation: async function (req, res) {
         try {
             const response = await axios({
                 "method": "GET",
@@ -10,11 +10,15 @@ module.exports = {
                 "headers": {
                     "content-type": "application/octet-stream",
                     "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
-                    "x-rapidapi-key": "ac414ed6d2msh2ce4cc693a1599bp126f6fjsn949d9a724cad",
+                    "x-rapidapi-key": process.env.REACT_APP_CORONA_STATS_APIKEY,
                     "useQueryString": true
+                },
+                "params" : {
+                    "country" : req.params.location
                 }
             });
-            res.json(response.data)
+            console.log(response.data.data);
+            return res.json(response.data.data);
         } catch (error) {
             console.error(error);
         }

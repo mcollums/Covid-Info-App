@@ -6,57 +6,46 @@ import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, TextArea, FormBtn } from "../components/Form";
 
-function Books() {
+function Graph() {
     // Setting our component's initial state
-    const [stats, setStats] = useState([])
+    const [covidData, setCovidData] = useState("global")
     const [formObject, setFormObject] = useState({})
 
-    // Load all books and store them with setBooks
+    // Load global data and store them with setCovidData
     useEffect(() => {
-        loadBooks()
+        loadCovidData()
     }, [])
 
-    // Loads all books and sets them to books
-    function loadBooks() {
-        API.getBooks()
+    // Loads covid data based on location and sets them to covidData
+    function loadCovidData(location) {
+        API.getCovidData(location)
             .then(res =>
-                setStats(res.data)
+                setCovidData(res.data)
             )
             .catch(err => console.log(err));
     };
 
-    // Deletes a book from the database with a given id, then reloads books from the db
-    function deleteBook(id) {
-        API.deleteBook(id)
-            .then(res => loadBooks())
-            .catch(err => console.log(err));
+    // TODO - clears country and city information from state
+    function resetData() {
+        console.log('reset Data')
     }
 
     // Handles updating component state when the user types into the input field
     function handleInputChange(event) {
         const { name, value } = event.target;
-        setFormObject({ ...formObject, [name]: value })
+        setFormObject({ ...formObject, [name]: value }) //takes past state and overwrites the property being passed from input field
     };
 
-    // When the form is submitted, use the API.saveBook method to save the book data
-    // Then reload books from the database
+    // When the form is submitted, use the API.getCovidData based on the location
     function handleFormSubmit(event) {
         event.preventDefault();
-        if (formObject.title && formObject.author) {
-            API.saveBook({
-                title: formObject.title,
-                author: formObject.author,
-                synopsis: formObject.synopsis
-            })
-                .then(res => loadBooks())
-                .catch(err => console.log(err));
-        }
+        console.log("handleFormSubmit")
     };
 
     return (
         <Container fluid>
             <Row>
-                <Col size="1"></Col>
+                <Col size="1"/>
                 <Col size="3">
                     <h6>Covid International Statistics</h6>
                 </Col>
@@ -64,18 +53,28 @@ function Books() {
                     <form>
                         <Input
                             onChange={handleInputChange}
-                            name="title"
+                            name="location"
                             placeholder="Country (optional)"
                             floatdir={"left"}
                         />
                         <FormBtn
-                            disabled={!(formObject.author && formObject.title)}
+                            disabled={!(formObject.location)}
                             onClick={handleFormSubmit}
                             floatdir={"left"}
                         >
                             Search Country
                     </FormBtn>
                     </form>
+                </Col>
+            </Row>
+            <Row>
+                <Col size="1"/>
+                <Col size="8">
+                    <h4>{covidData.location} Covid-19 Statistics</h4>
+                    <p>{covidData.recovered} Total Recovered</p>
+                    <p>{covidData.deaths} Total Deaths</p>
+                    <p>{covidData.confirmed} Confirmed Cases</p>
+                    <p>{covidData.lastReported} Date Reported</p>
                 </Col>
                 {/* <Col size="md-6 sm-12">
                     <Jumbotron>
@@ -104,4 +103,4 @@ function Books() {
 }
 
 
-export default Books;
+export default Graph;
