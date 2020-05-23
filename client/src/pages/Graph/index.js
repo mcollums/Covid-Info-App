@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import API from "../utils/API";
+import "./style.css"
+import API from "../../utils/API";
 import { Link } from "react-router-dom";
-import { Col, Row, Container } from "../components/Grid";
-import { CountrySearchBar } from "../components/CountrySearchBar";
+import { Col, Row, Container } from "../../components/Grid";
+import { CountrySearchBar } from "../../components/CountrySearchBar";
 
 
 function Graph() {
@@ -11,8 +12,9 @@ function Graph() {
     const [formObject, setFormObject] = useState({})
 
     // Load global data and store them with setCovidData
+    //PRODUCTION TODO - Implement the Global Default Search
     useEffect(() => {
-        loadCovidData("global")
+        // loadCovidData("global")
     }, [])
 
     // Loads covid data based on location and sets them to covidData
@@ -40,12 +42,12 @@ function Graph() {
     // When the form is submitted, use the API.getCovidData based on the FormObject's location
     function handleFormSubmit(event) {
         event.preventDefault();
-        loadCovidData(formObject.country);
+        // loadCovidData(formObject.country);
     };
 
     return (
         <Container fluid>
-            <Row>
+            <Row classes="search-row" fluid="true">
                 <Col size="1" />
                 <Col size="3">
                     <h6>Covid International Statistics</h6>
@@ -59,7 +61,7 @@ function Graph() {
                 </Col>
             </Row>
             <Row>
-                <Col size="1" />
+                <Col size="1"/>
                 <Col size="md-8 sm-12">
                     {/* This ternary operator keeps the page from showing the template if there's not data in the state */}
                     {JSON.stringify(covidData) !== '{}' ? //If covid Data is not empty, show data 
