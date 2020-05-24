@@ -47,10 +47,10 @@ function Graph() {
 
     return (
         <Container fluid>
-            <Row classes="search-row" fluid="true">
+            <Row classes="search-row">
                 <Col size="1" />
                 <Col size="3">
-                    <h6>Covid International Statistics</h6>
+                    <h5>Search by Country and City</h5>
                 </Col>
                 <Col size="7">
                     <CountrySearchBar

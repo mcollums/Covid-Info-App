@@ -1,24 +1,21 @@
 const db = require("../models");
-const axios = require('axios');
+const { getDataByLocationAPI } = require('../scripts/statHelper')
 
 module.exports = {
     getStatsByLocation: async function (req, res) {
+        //NOTE: This API only searches for the country if it is capitalized.
+        //For example, canada should be Canada. 
+        const reqLocation = req.params.location;
         try {
-            const response = await axios({
-                "method": "GET",
-                "url": "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/total",
-                "headers": {
-                    "content-type": "application/octet-stream",
-                    "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
-                    "x-rapidapi-key": process.env.REACT_APP_CORONA_STATS_APIKEY,
-                    "useQueryString": true
-                },
-                "params" : {
-                    "country" : req.params.location
-                }
-            });
-            console.log(response.data.data);
-            return res.json(response.data.data);
+            //Call DB here and then put axios in helper file
+            const islocationInDB = await db.Book.findOne({country : reqLocation});
+            console.log(`Inside getStatsByLocation in controller 
+            ===============================================
+            ${islocationInDB}
+            `)
+            const apiResponse = await getDataByLocationAPI(reqLocation);
+            
+            return res.json(apiResponse);
         } catch (error) {
             console.error(error);
         }
