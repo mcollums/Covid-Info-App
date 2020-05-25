@@ -1,9 +1,9 @@
 const db = require("../models");
 const _ = require('underscore');
-const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('../scripts/statHelper')
+const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('./helpers/statHelper')
 
 module.exports = {
-    getStatsByLocation: async function (req, res) {
+    getTodaysStatsByLocation: async function (req, res) {
         const reqLocation = req.params.location;
         let clientObj = {};
 
@@ -26,7 +26,7 @@ module.exports = {
                 clientObj = dbObj;
 
             } else { //if the country is in the DB
-                ///compare the dates 
+                ///Get formatted Date Objects
                 const lastDateObj = await splitDBDate(islocationInDB.lastChecked);
                 const todayObj = await getTodaysDate();
 
@@ -47,6 +47,7 @@ module.exports = {
                     clientObj = islocationInDB
                 }
             } 
+
             return res.json(clientObj);
 
         } catch (error) { //For Errors

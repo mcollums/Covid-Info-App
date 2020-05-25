@@ -7,7 +7,7 @@ const statsController = require("../../controllers/statsController");
 
 // Matches with "/api/stats/:id"
 router.route("/:location")
-  .get(statsController.getStatsByLocation)
+  .get(statsController.getTodaysStatsByLocation)
 //   .put(headlineController.update)
 //   .delete(headlineController.remove);
 
