@@ -26,7 +26,6 @@ module.exports = {
         }
     },
     splitDBDate: async function (str) {
-        console.log(`str inside heler: ${str}`);
         //Takes date string from API, splits it up and returns a new object
         const [year, month, extra] = str.split("-");
         const [day] = extra.split("T");
@@ -40,18 +39,12 @@ module.exports = {
         return dateObj;
     },
     getTodaysDate: async function () {
+        //Gets today's dd/mm/yyyy and returns it as an object
         const today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth() + 1;
         var yyyy = today.getFullYear();
 
-        // if (dd < 10) {
-        //     dd = '0' + dd;
-        // }
-
-        // if (mm < 10) {
-        //     mm = '0' + mm;
-        // }
         const dateObj = {
             "day": parseInt(dd),
             "month": parseInt(mm),
