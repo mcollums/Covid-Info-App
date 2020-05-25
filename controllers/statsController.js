@@ -1,21 +1,55 @@
 const db = require("../models");
-const axios = require('axios');
+const _ = require('underscore');
+const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('../scripts/statHelper')
 
 module.exports = {
-    getGlobalStats: async function (req, res) {
+    getStatsByLocation: async function (req, res) {
+        const reqLocation = req.params.location;
+        let clientObj = {};
+
         try {
-            const response = await axios({
-                "method": "GET",
-                "url": "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/total",
-                "headers": {
-                    "content-type": "application/octet-stream",
-                    "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com",
-                    "x-rapidapi-key": "ac414ed6d2msh2ce4cc693a1599bp126f6fjsn949d9a724cad",
-                    "useQueryString": true
+            //Find country in DB based on location
+            const islocationInDB = await db.Stats.findOne({ country: reqLocation });
+
+            //IF the country is not in the DB THEN call the API, add it to DB, and set the clientObj to be the dbObj
+            if (islocationInDB === null) {
+                const { location, recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
+                const dbObj = await db.Stats.create({
+                    "country": location,
+                    "recovered": recovered,
+                    "deaths": deaths,
+                    "confirmed": confirmed,
+                    "lastReported": lastReported,
+                    "lastChecked": lastChecked
+                });
+
+                clientObj = dbObj;
+
+            } else { //if the country is in the DB
+                ///compare the dates 
+                const lastDateObj = await splitDBDate(islocationInDB.lastChecked);
+                const todayObj = await getTodaysDate();
+
+                // IF not today's info, retrieve it from the API
+                if (_.isEqual(lastDateObj, todayObj) === false) {
+                    const { recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
+                    const updatedDBObj = await db.Stats.findOneAndUpdate({ country: reqLocation }, {
+                        "recovered": recovered,
+                        "deaths": deaths,
+                        "confirmed": confirmed,
+                        "lastReported": lastReported,
+                        "lastChecked": lastChecked
+                    }, { new: true });
+                    
+                    clientObj = updatedDBObj
+                } else { //ELSE send the DB Object from today
+                    console.log("ELSE");
+                    clientObj = islocationInDB
                 }
-            });
-            res.json(response.data)
-        } catch (error) {
+            } 
+            return res.json(clientObj);
+
+        } catch (error) { //For Errors
             console.error(error);
         }
     }
