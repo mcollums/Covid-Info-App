@@ -1,6 +1,6 @@
 const db = require("../models");
 const { getByCountry } = require('./helpers/historyHelper');
-
+const { splitDBDate, getTodaysDate } = require('./helpers/helper');
 
 
 module.exports = {
@@ -10,25 +10,33 @@ module.exports = {
     // },
     getCountryHistory: async function (req,res) {
         const country = req.params.country;
-        const countryData = await getByCountry(country);
         let clientObj = {};
 
         try {
             const islocationInDB = await (await db.Country.findOne({ "country" : country }));
-            
+            //IF country is not in DB
             if (islocationInDB === null) {
+                //Add the country to Country Collection
                 await db.Country.create({ "country" : country });
+                //Get API Data for the country
                 const apiRes = await getByCountry(country);
+                //Add the API Data to the History Collection
                 const hisObj = await db.History.create(apiRes);
-                const result = await db.Country.findOneAndUpdate({ "country" : country }, {$push: { history : hisObj }}, { new: true });
-                console.log(result);
+                //Add the new _ids to the Country's history field
+                await db.Country.findOneAndUpdate({ "country" : country }, {$push: { history : hisObj }}, { new: true });
+                //Populate the Country with the History Data and send back to client
+                const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
+                clientObj = resultObj
             } else {
-                console.log("Country Created Already")
+                console.log("Country Created Already");
+                const todayObj = await getTodaysDate();
+
+                // if ()
             }
         } catch (error) {
             console.error(error);
         }
 
-        return res.json(countryData);
+        return res.json(clientObj);
     }
 }
