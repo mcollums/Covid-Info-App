@@ -1,10 +1,12 @@
 const db = require("../models");
 const _ = require('underscore');
-const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('./helpers/statsHelper')
+const { getDataByLocationAPI } = require('./helpers/statsHelper');
+const { splitDBDate, getTodaysDate, capitalize } = require('./helpers/helper');
+
 
 module.exports = {
     getTodaysStatsByLocation: async function (req, res) {
-        const reqCountry = req.params.country;
+        const reqCountry = await capitalize(req.params.country);
         let clientObj = {};
 
         try {
@@ -43,7 +45,6 @@ module.exports = {
                     
                     clientObj = updatedDBObj
                 } else { //ELSE send the DB Object from today
-                    console.log("ELSE");
                     clientObj = islocationInDB
                 }
             } 
