@@ -1,19 +1,19 @@
 const db = require("../models");
 const _ = require('underscore');
-const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('./helpers/statHelper')
+const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('./helpers/statsHelper')
 
 module.exports = {
     getTodaysStatsByLocation: async function (req, res) {
-        const reqLocation = req.params.location;
+        const reqCountry = req.params.country;
         let clientObj = {};
 
         try {
             //Find country in DB based on location
-            const islocationInDB = await db.Stats.findOne({ country: reqLocation });
+            const islocationInDB = await db.Stats.findOne({ country: reqCountry });
 
             //IF the country is not in the DB THEN call the API, add it to DB, and set the clientObj to be the dbObj
             if (islocationInDB === null) {
-                const { location, recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
+                const { location, recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqCountry);
                 const dbObj = await db.Stats.create({
                     "country": location,
                     "recovered": recovered,
@@ -33,7 +33,7 @@ module.exports = {
                 // IF not today's info, retrieve it from the API
                 if (_.isEqual(lastDateObj, todayObj) === false) {
                     const { recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
-                    const updatedDBObj = await db.Stats.findOneAndUpdate({ country: reqLocation }, {
+                    const updatedDBObj = await db.Stats.findOneAndUpdate({ country: reqCountry }, {
                         "recovered": recovered,
                         "deaths": deaths,
                         "confirmed": confirmed,

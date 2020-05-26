@@ -5,8 +5,8 @@ const statsController = require("../../controllers/statsController");
 // router.route("/")
 //   .get(statsController.getGlobalStats)
 
-// Matches with "/api/stats/:id"
-router.route("/:location")
+// Matches with "/api/stats/:country"
+router.route("/:country")
   .get(statsController.getTodaysStatsByLocation)
 //   .put(headlineController.update)
 //   .delete(headlineController.remove);
