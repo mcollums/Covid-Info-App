@@ -1,19 +1,21 @@
 const db = require("../models");
 const _ = require('underscore');
-const { getDataByLocationAPI, splitDBDate, getTodaysDate } = require('../scripts/statHelper')
+const { getDataByLocationAPI } = require('./helpers/statsHelper');
+const { splitDBDate, getTodaysDate, capitalize } = require('./helpers/helper');
+
 
 module.exports = {
-    getStatsByLocation: async function (req, res) {
-        const reqLocation = req.params.location;
+    getTodaysStatsByLocation: async function (req, res) {
+        const reqCountry = await capitalize(req.params.country);
         let clientObj = {};
 
         try {
             //Find country in DB based on location
-            const islocationInDB = await db.Stats.findOne({ country: reqLocation });
+            const islocationInDB = await db.Stats.findOne({ country: reqCountry });
 
             //IF the country is not in the DB THEN call the API, add it to DB, and set the clientObj to be the dbObj
             if (islocationInDB === null) {
-                const { location, recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
+                const { location, recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqCountry);
                 const dbObj = await db.Stats.create({
                     "country": location,
                     "recovered": recovered,
@@ -26,14 +28,14 @@ module.exports = {
                 clientObj = dbObj;
 
             } else { //if the country is in the DB
-                ///compare the dates 
+                ///Get formatted Date Objects
                 const lastDateObj = await splitDBDate(islocationInDB.lastChecked);
                 const todayObj = await getTodaysDate();
 
                 // IF not today's info, retrieve it from the API
                 if (_.isEqual(lastDateObj, todayObj) === false) {
                     const { recovered, deaths, confirmed, lastChecked, lastReported } = await getDataByLocationAPI(reqLocation);
-                    const updatedDBObj = await db.Stats.findOneAndUpdate({ country: reqLocation }, {
+                    const updatedDBObj = await db.Stats.findOneAndUpdate({ country: reqCountry }, {
                         "recovered": recovered,
                         "deaths": deaths,
                         "confirmed": confirmed,
@@ -43,10 +45,10 @@ module.exports = {
                     
                     clientObj = updatedDBObj
                 } else { //ELSE send the DB Object from today
-                    console.log("ELSE");
                     clientObj = islocationInDB
                 }
             } 
+
             return res.json(clientObj);
 
         } catch (error) { //For Errors

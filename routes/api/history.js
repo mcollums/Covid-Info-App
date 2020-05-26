@@ -1,13 +1,13 @@
 const router = require("express").Router();
-const statsController = require("../../controllers/statsController");
+const historyController = require("../../controllers/historyController");
 
 // Matches with "/api/stats"
 // router.route("/")
-//   .get(statsController.getGlobalStats)
+//   .get(historyController.getGlobalHistory)
 
-// Matches with "/api/stats/:country"
+// Matches with "/api/history/:country"
 router.route("/:country")
-  .get(statsController.getTodaysStatsByLocation)
+  .get(historyController.getCountryHistory)
 //   .put(headlineController.update)
 //   .delete(headlineController.remove);
 

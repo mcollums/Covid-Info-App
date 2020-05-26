@@ -1,4 +1,5 @@
 module.exports = {
-  Book: require("./book"),
-  Stats: require("./stats")
+  Stats: require("./stats"),
+  History: require("./history"),
+  Country: require("./country"),
 };

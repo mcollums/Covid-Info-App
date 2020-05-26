@@ -21,7 +21,8 @@ mongoose.connect(
   process.env.MONGODB_URI || 
   "mongodb://localhost/reactCovidDB", 
     { useNewUrlParser: true, 
-      useFindAndModify: false 
+      useFindAndModify: false ,
+      useUnifiedTopology: true 
     }
   );
 
