@@ -26,12 +26,12 @@ module.exports = {
                 await db.Country.findOneAndUpdate({ "country" : country }, {$push: { history : hisObj }}, { new: true });
                 //Populate the Country with the History Data and send back to client
                 const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
-                clientObj = resultObj
+                clientObj = resultObj;
             } else {
                 console.log("Country Created Already");
-                const todayObj = await getTodaysDate();
-
-                // if ()
+                // const todayObj = await getTodaysDate();
+                const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
+                clientObj = resultObj;
             }
         } catch (error) {
             console.error(error);
