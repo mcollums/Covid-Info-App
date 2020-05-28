@@ -27,13 +27,13 @@ module.exports = {
                 await db.Country.findOneAndUpdate({ "country" : country }, {$push: { history : hisObj }}, { new: true });
                 //Populate the Country with the History Data and send back to client
                 const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
-                console.log("controller IF after DB populate " + JSON.stringify(resultObj));
+                // console.log("controller IF after DB populate " + JSON.stringify(resultObj));
                 clientObj = resultObj
             } else {
                 console.log("Country Created Already");
                 // const todayObj = await getTodaysDate();
                 const dbObj = await db.Country.findOne({ "country" : country }).populate("history");
-                console.log("controller after DB populate " + JSON.stringify(dbObj));
+                // console.log("controller after DB populate " + JSON.stringify(dbObj)); 
                 clientObj = dbObj
             }
         } catch (error) {
