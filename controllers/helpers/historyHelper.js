@@ -16,10 +16,12 @@ module.exports = {
     // },
     getByCountry: async function (location) {
         const locFormat = location.split(" ").join("-");
+        locFormat.toLowerCase();
+
         try {
             const apiResponse = await axios({
                 "method": "GET",
-                "url": `https://api.covid19api.com/live/country/${locFormat}/status/confirmed/date/2020-0-01T13:13:30Z`
+                "url": `https://api.covid19api.com/live/country/${locFormat}/status/confirmed/date/2020-01-01T13:13:30Z`
             });
             // console.log(apiResponse);
             return apiResponse.data;

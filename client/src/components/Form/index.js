@@ -15,11 +15,12 @@ export function DropDown(props) {
     <div className="form-group" style={{ float: props.floatdir, width: "70%", marginRight: "10px" }}>
       <select className="form-control" id="select-form" {...props} >
         <option>-- Please Choose an Country --</option>
-        <option>Canada</option>
+        <option>Greece</option>
         <option>Italy</option>
+        <option>Japan</option>
+        <option>Russia</option>
         <option>Spain</option>
-        <option>Mexico</option>
-        <option>USA</option>
+        <option>Turkey</option>
       </select>
     </div>
   );
