@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import * as d3 from "d3";
 import "./style.css"
 import API from "../../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../../components/Grid";
 import { CountrySearchBar } from "../../components/CountrySearchBar";
+import { D3Graph } from "../../components/d3Graph";
+
 
 
 function Graph() {
@@ -19,10 +22,13 @@ function Graph() {
 
     // Loads covid data based on location and sets them to covidData
     function loadCovidData(location) {
-        API.getCovidData(location)
-            .then(res =>
-                setCovidData(res.data)
-            )
+        console.log(location);
+        API.getHistoryByCountry(location)
+            .then(res => {
+                setCovidData(res.data);
+                // console.log(JSON.stringify(covidData));
+            }
+            ).then(res => console.log("loadCovidData " + JSON.stringify(covidData.history)))
             .catch(err => console.log(err));
     };
 
@@ -42,7 +48,7 @@ function Graph() {
     // When the form is submitted, use the API.getCovidData based on the FormObject's location
     function handleFormSubmit(event) {
         event.preventDefault();
-        // loadCovidData(formObject.country);
+        loadCovidData(formObject.country);
     };
 
     return (
@@ -54,26 +60,21 @@ function Graph() {
                 </Col>
                 <Col size="7">
                     <CountrySearchBar
-                        onClick = {handleFormSubmit}
+                        onClick={handleFormSubmit}
                         onChange={handleInputChange}
                         country={formObject.country}
                     />
                 </Col>
             </Row>
             <Row>
-                <Col size="1"/>
+                <Col size="1" />
                 <Col size="md-8 sm-12">
-                    {/* This ternary operator keeps the page from showing the template if there's not data in the state */}
-                    {JSON.stringify(covidData) !== '{}' ? //If covid Data is not empty, show data 
-                        (<>
-                            <h4>{covidData.location} Covid-19 Statistics</h4>
-                            <p>{covidData.recovered} Total Recovered</p>
-                            <p>{covidData.deaths} Total Deaths</p>
-                            <p>{covidData.confirmed} Confirmed Cases</p>
-                            <p>{covidData.lastReported} Date Reported</p>
-                        </>)
-                        : (console.log("No Data")) // otherwise, show nothing
-                    }
+                    {JSON.stringify(covidData) !== '{}' ?
+                        <D3Graph
+                            country={formObject.country}
+                            data={covidData}
+                        />
+                        : console.log("No Data")}
                 </Col>
             </Row>
         </Container>

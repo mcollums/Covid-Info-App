@@ -10,6 +10,7 @@ module.exports = {
     // },
     getCountryHistory: async function (req,res) {
         const country = req.params.country;
+        console.log("controller" + country)
         let clientObj = {};
 
         try {
@@ -26,12 +27,14 @@ module.exports = {
                 await db.Country.findOneAndUpdate({ "country" : country }, {$push: { history : hisObj }}, { new: true });
                 //Populate the Country with the History Data and send back to client
                 const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
-                clientObj = resultObj;
+                console.log("controller IF after DB populate " + JSON.stringify(resultObj));
+                clientObj = resultObj
             } else {
                 console.log("Country Created Already");
                 // const todayObj = await getTodaysDate();
-                const resultObj = await db.Country.findOne({ "country" : country }).populate("history");
-                clientObj = resultObj;
+                const dbObj = await db.Country.findOne({ "country" : country }).populate("history");
+                console.log("controller after DB populate " + JSON.stringify(dbObj));
+                clientObj = dbObj
             }
         } catch (error) {
             console.error(error);
